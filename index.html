@@ -36,9 +36,10 @@
                             <div class="form-group">
                                 <label for="percentage" class="form-label">Wartość %</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" id="percentage" min="0" max="100" value="20" step="0.01">
+                                    <input type="number" class="form-control" id="percentage" min="0" max="99" value="20" step="0.01">
                                     <span class="input-group-text">%</span>
                                 </div>
+                                <input type="range" class="form-range" id="percentageRange" min="0" max="99" value="20" step="0.01">
                             </div>
                             <div class="form-group">
                                 <label for="calcType" class="form-label">Typ</label>
@@ -551,6 +552,7 @@
         initialValue: document.getElementById("initialValue"),
         initialValueRange: document.getElementById("initialValueRange"),
         percentage: document.getElementById("percentage"),
+        percentageRange: document.getElementById("percentageRange"),
         calcType: document.getElementById("calcType"),
         summaryBars: document.getElementById("summaryBars")
     };
@@ -569,6 +571,22 @@
         elements.calcType.focus();
         elements.calcType.click();
     });
+
+    // Funkcja aktualizująca maksymalną wartość % w zależności od typu
+    function updatePercentageMax() {
+        const calcType = elements.calcType.value;
+        const maxPercentage = calcType === "margin" ? 99 : 100;
+        elements.percentage.max = maxPercentage;
+        elements.percentageRange.max = maxPercentage;
+
+        // Jeśli bieżąca wartość przekracza nowy limit, dostosuj ją
+        let currentValue = parseFloat(elements.percentage.value);
+        if (currentValue > maxPercentage) {
+            currentValue = maxPercentage;
+            elements.percentage.value = currentValue.toFixed(2);
+            elements.percentageRange.value = currentValue;
+        }
+    }
 
     // Synchronizacja suwaka i pola liczbowego dla wartości początkowej
     elements.initialValueRange.addEventListener("input", () => {
@@ -596,17 +614,29 @@
         calculateResults();
     });
 
-    // Walidacja pola procentowego
+    // Synchronizacja suwaka i pola liczbowego dla wartości %
+    elements.percentageRange.addEventListener("input", () => {
+        let value = parseFloat(elements.percentageRange.value);
+        if (value < 0) {
+            value = 0;
+            elements.percentageRange.value = value;
+        }
+        elements.percentage.value = value.toFixed(2);
+        calculateResults();
+    });
+
     elements.percentage.addEventListener("input", () => {
         let value = parseFloat(elements.percentage.value);
+        const maxValue = parseFloat(elements.percentage.max);
         if (isNaN(value) || value < 0) {
             value = 0;
             elements.percentage.value = value.toFixed(2);
         }
-        if (value > 100) {
-            value = 100;
+        if (value > maxValue) {
+            value = maxValue;
             elements.percentage.value = value.toFixed(2);
         }
+        elements.percentageRange.value = value;
         calculateResults();
     });
 
@@ -643,13 +673,15 @@
         }
     }
 
-    // Nasłuchiwanie zmian w selekcie
+    // Nasłuchiwanie zmian w selekcie i aktualizacja limitu %
     elements.calcType.addEventListener("change", () => {
         updateSelectDisplay(elements.calcType, calcTypeDisplay);
+        updatePercentageMax();
         calculateResults();
     });
 
-    // Inicjalne obliczenie
+    // Inicjalna aktualizacja limitu % i obliczenie
+    updatePercentageMax();
     calculateResults();
 
     // Zoom
