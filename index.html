@@ -441,7 +441,7 @@
         cursor: pointer;
         transition: color 0.3s ease;
         width: 90%;
-        max-width: 333px; /* Zmniejszono o 1/3 z 500px */
+        max-width: 333px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -477,7 +477,7 @@
     @media (max-width: 576px) {
         .form-row {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center; /* Wyrównanie wiersza do środka */
             gap: 6px;
         }
 
@@ -486,7 +486,7 @@
             max-width: 200px;
             min-width: 200px;
             margin: 5px 0;
-            align-self: flex-start;
+            align-self: center; /* Wyrównanie boxów do środka */
         }
 
         .form-control, .select-display {
@@ -515,7 +515,7 @@
 
         input[type="range"].form-range {
             width: 200px;
-            align-self: flex-start;
+            margin: 5px auto; /* Wyrównanie suwaka do środka */
             -webkit-appearance: none !important;
             appearance: none !important;
             outline: none !important;
@@ -739,7 +739,7 @@
             document.body.classList.add('dark-mode');
             document.getElementById('toggleDarkModeBtn').textContent = '☀️';
         } else {
-            body.classList.add('light-mode');
+            document.body.classList.add('light-mode');
             document.getElementById('toggleDarkModeBtn').textContent = '🌙';
         }
     }
