@@ -11,6 +11,21 @@
     <div class="logo-container">
         <img src="cropped-logo-FB-1.png" id="siteLogo" alt="Finance Brothers Logo" class="logo d-block mx-auto">
         <div class="zoom-controls">
+            <button id="calcToggleBtn" class="btn btn-sm" aria-label="Otwórz kalkulator">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <rect x="6" y="6" width="12" height="4"/>
+                    <circle cx="7" cy="13" r="1"/>
+                    <circle cx="12" cy="13" r="1"/>
+                    <circle cx="17" cy="13" r="1"/>
+                    <circle cx="7" cy="16" r="1"/>
+                    <circle cx="12" cy="16" r="1"/>
+                    <circle cx="17" cy="16" r="1"/>
+                    <circle cx="7" cy="19" r="1"/>
+                    <circle cx="12" cy="19" r="1"/>
+                    <circle cx="17" cy="19" r="1"/>
+                </svg>
+            </button>
             <button id="zoomInBtn" class="btn btn-sm" aria-label="Powiększ">+</button>
             <button id="zoomOutBtn" class="btn btn-sm" aria-label="Pomniejsz">-</button>
             <button id="toggleDarkModeBtn" class="btn btn-sm" aria-label="Przełącz tryb ciemny">🌙</button>
@@ -63,6 +78,42 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kalkulator (ukryty domyślnie) -->
+    <div class="sidebar-box draggable" id="calculatorBox" style="display: none;">
+        <h3 class="sidebar-header">
+            Kalkulator
+            <button id="closeCalcBtn" class="close-btn" title="Zamknij kalkulator">×</button>
+        </h3>
+        <div class="calculator">
+            <input type="text" id="calcDisplay" readonly>
+            <div class="calc-buttons">
+                <button class="calc-btn calc-clear">C</button>
+                <button class="calc-btn calc-operation">±</button>
+                <button class="calc-btn calc-operation">%</button>
+                <button class="calc-btn calc-operation">/</button>
+
+                <button class="calc-btn calc-number">7</button>
+                <button class="calc-btn calc-number">8</button>
+                <button class="calc-btn calc-number">9</button>
+                <button class="calc-btn calc-operation">*</button>
+
+                <button class="calc-btn calc-number">4</button>
+                <button class="calc-btn calc-number">5</button>
+                <button class="calc-btn calc-number">6</button>
+                <button class="calc-btn calc-operation">-</button>
+
+                <button class="calc-btn calc-number">1</button>
+                <button class="calc-btn calc-number">2</button>
+                <button class="calc-btn calc-number">3</button>
+                <button class="calc-btn calc-operation">+</button>
+
+                <button class="calc-btn calc-number calc-zero">0</button>
+                <button class="calc-btn calc-number">.</button>
+                <button class="calc-btn calc-equals">=</button>
             </div>
         </div>
     </div>
@@ -177,6 +228,12 @@
     .zoom-controls .btn:hover {
         background: var(--accent-gradient-end);
         transform: translateY(-1px);
+    }
+
+    .zoom-controls .btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: var(--button-text);
     }
 
     .logo, #siteLogo {
@@ -474,6 +531,133 @@
         z-index: 1;
     }
 
+    /* Stylizacja kalkulatora */
+    .calculator {
+        background: #000;
+        border-radius: 20px;
+        padding: 10px;
+        width: 180px;
+        margin: 0 auto;
+    }
+
+    #calcDisplay {
+        width: 100%;
+        height: 35px;
+        background: #000;
+        color: #fff;
+        font-size: 1.3em;
+        text-align: right;
+        padding: 5px;
+        border: none;
+        outline: none;
+        margin-bottom: 8px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .calc-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+    }
+
+    .calc-btn {
+        background: #333;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        font-size: 0.9em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .calc-btn:hover {
+        background: #555;
+    }
+
+    .calc-number {
+        background: #505050;
+    }
+
+    .calc-operation {
+        background: #ff9500;
+        color: #fff;
+    }
+
+    .calc-clear {
+        background: #a5a5a5;
+        color: #000;
+    }
+
+    .calc-equals {
+        background: #ff9500;
+        color: #fff;
+    }
+
+    .calc-zero {
+        grid-column: span 2;
+        border-radius: 18px;
+        width: 80px;
+    }
+
+    /* Styl dla przeciągalnego kalkulatora */
+    .sidebar-box {
+        background: var(--secondary-bg);
+        border-radius: 10px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        padding: 15px;
+        position: relative;
+        width: 100%;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--accent-gradient-start), var(--accent-gradient-end));
+        color: var(--button-text);
+        padding: 8px;
+        margin: -15px -15px 15px -15px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 1em;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 1em;
+        cursor: pointer;
+        color: var(--button-text);
+        transition: transform 0.2s ease;
+    }
+
+    .close-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .draggable {
+        position: absolute;
+        cursor: move;
+        z-index: 1000;
+        user-select: none;
+        width: 250px;
+        max-width: 250px;
+        touch-action: none;
+        background: var(--secondary-bg);
+        border-radius: 10px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
     @media (max-width: 576px) {
         .form-row {
             flex-direction: column;
@@ -544,6 +728,30 @@
             margin: 0 !important;
             padding: 10px 0;
             max-width: 150px;
+        }
+
+        .calc-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8em;
+        }
+
+        .calc-zero {
+            width: 70px;
+        }
+
+        #calcDisplay {
+            font-size: 1.1em;
+            height: 30px;
+        }
+
+        .calculator {
+            width: 160px;
+        }
+
+        .draggable {
+            width: 200px;
+            max-width: 200px;
         }
     }
 </style>
@@ -708,8 +916,10 @@
 
     function updateZoom() {
         const container = document.querySelector('.container');
+        const previousZoom = currentZoom;
         container.style.transform = `scale(${currentZoom})`;
         container.style.transformOrigin = 'top center';
+        updateCalculatorPosition(previousZoom);
     }
 
     document.getElementById("zoomInBtn").addEventListener("click", () => {
@@ -762,6 +972,252 @@
     document.getElementById('siteLogo').addEventListener('click', () => {
         window.open('https://finance-brothers.pl', '_blank');
     });
+
+    // Logika kalkulatora
+    const calcDisplay = document.getElementById('calcDisplay');
+    let currentInput = '0';
+    let previousInput = '';
+    let operation = null;
+    let shouldResetDisplay = false;
+
+    function updateDisplay() {
+        calcDisplay.value = currentInput;
+    }
+
+    function clearCalculator() {
+        currentInput = '0';
+        previousInput = '';
+        operation = null;
+        shouldResetDisplay = false;
+        updateDisplay();
+    }
+
+    function toggleSign() {
+        if (currentInput === '0') return;
+        currentInput = (parseFloat(currentInput) * -1).toString();
+        updateDisplay();
+    }
+
+    function percent() {
+        currentInput = (parseFloat(currentInput) / 100).toString();
+        updateDisplay();
+    }
+
+    function appendNumber(number) {
+        if (shouldResetDisplay) {
+            currentInput = number;
+            shouldResetDisplay = false;
+        } else {
+            currentInput = currentInput === '0' ? number : currentInput + number;
+        }
+        updateDisplay();
+    }
+
+    function appendDecimal() {
+        if (!currentInput.includes('.')) {
+            currentInput += '.';
+        }
+        updateDisplay();
+    }
+
+    function setOperation(op) {
+        if (currentInput === '') return;
+        if (previousInput !== '') {
+            calculate();
+        }
+        operation = op;
+        previousInput = currentInput;
+        shouldResetDisplay = true;
+    }
+
+    function calculate() {
+        if (previousInput === '' || currentInput === '' || operation === null) return;
+        let result;
+        const prev = parseFloat(previousInput);
+        const curr = parseFloat(currentInput);
+
+        switch (operation) {
+            case '+':
+                result = prev + curr;
+                break;
+            case '-':
+                result = prev - curr;
+                break;
+            case '*':
+                result = prev * curr;
+                break;
+            case '/':
+                if (curr === 0) {
+                    alert("Nie można dzielić przez zero!");
+                    clearCalculator();
+                    return;
+                }
+                result = prev / curr;
+                break;
+            default:
+                return;
+        }
+
+        currentInput = result.toString();
+        operation = null;
+        previousInput = '';
+        shouldResetDisplay = true;
+        updateDisplay();
+    }
+
+    document.querySelectorAll('.calc-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const value = button.textContent;
+
+            if (button.classList.contains('calc-number')) {
+                appendNumber(value);
+            } else if (button.classList.contains('calc-operation')) {
+                if (value === '±') {
+                    toggleSign();
+                } else if (value === '%') {
+                    percent();
+                } else {
+                    setOperation(value);
+                }
+            } else if (button.classList.contains('calc-clear')) {
+                clearCalculator();
+            } else if (button.classList.contains('calc-equals')) {
+                calculate();
+            } else if (value === '.') {
+                appendDecimal();
+            }
+        });
+    });
+
+    updateDisplay();
+
+    // Logika pokazywania/ukrywania i przeciągania kalkulatora
+    const calculatorBox = document.getElementById('calculatorBox');
+    const calcToggleBtn = document.getElementById('calcToggleBtn');
+    const closeCalcBtn = document.getElementById('closeCalcBtn');
+    let isDragging = false;
+    let initialX = 0;
+    let initialY = 0;
+
+    function toggleCalculator() {
+        const isVisible = calculatorBox.style.display === 'block';
+        if (isVisible) {
+            calculatorBox.style.display = 'none';
+        } else {
+            calculatorBox.style.display = 'block';
+            // Ustaw domyślną pozycję w centrum strony
+            const windowWidth = window.innerWidth / currentZoom;
+            const windowHeight = window.innerHeight / currentZoom;
+            const calcWidth = calculatorBox.offsetWidth;
+            const calcHeight = calculatorBox.offsetHeight;
+            calculatorBox.style.left = ((windowWidth - calcWidth) / 2) + 'px';
+            calculatorBox.style.top = ((windowHeight - calcHeight) / 2) + 'px';
+        }
+    }
+
+    calcToggleBtn.addEventListener('click', toggleCalculator);
+    closeCalcBtn.addEventListener('click', () => {
+        calculatorBox.style.display = 'none';
+    });
+
+    calculatorBox.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('sidebar-header') && !e.target.classList.contains('close-btn')) {
+            isDragging = true;
+            const calcRect = calculatorBox.getBoundingClientRect();
+            const currentX = (calcRect.left + window.scrollX) / currentZoom;
+            const currentY = (calcRect.top + window.scrollY) / currentZoom;
+
+            calculatorBox.style.left = currentX + 'px';
+            calculatorBox.style.top = currentY + 'px';
+
+            initialX = (e.clientX / currentZoom) - currentX;
+            initialY = (e.clientY / currentZoom) - currentY;
+            calculatorBox.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            e.preventDefault();
+            const newX = (e.clientX / currentZoom) - initialX;
+            const newY = (e.clientY / currentZoom) - initialY;
+
+            const windowWidth = window.innerWidth / currentZoom;
+            const calcWidth = calculatorBox.offsetWidth;
+            const calcHeight = calculatorBox.offsetHeight;
+            const documentHeight = document.documentElement.scrollHeight / currentZoom;
+
+            const boundedX = Math.max(0, Math.min(newX, windowWidth - calcWidth));
+            const boundedY = Math.max(0, Math.min(newY, documentHeight - calcHeight));
+
+            calculatorBox.style.left = boundedX + 'px';
+            calculatorBox.style.top = boundedY + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            calculatorBox.style.cursor = 'move';
+        }
+    });
+
+    // Obsługa dotyku dla urządzeń mobilnych
+    calculatorBox.addEventListener('touchstart', (e) => {
+        if (e.target.classList.contains('sidebar-header') && !e.target.classList.contains('close-btn')) {
+            isDragging = true;
+            const calcRect = calculatorBox.getBoundingClientRect();
+            const currentX = (calcRect.left + window.scrollX) / currentZoom;
+            const currentY = (calcRect.top + window.scrollY) / currentZoom;
+
+            calculatorBox.style.left = currentX + 'px';
+            calculatorBox.style.top = currentY + 'px';
+
+            const touch = e.touches[0];
+            initialX = (touch.clientX / currentZoom) - currentX;
+            initialY = (touch.clientY / currentZoom) - currentY;
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const newX = (touch.clientX / currentZoom) - initialX;
+            const newY = (touch.clientY / currentZoom) - initialY;
+
+            const windowWidth = window.innerWidth / currentZoom;
+            const calcWidth = calculatorBox.offsetWidth;
+            const calcHeight = calculatorBox.offsetHeight;
+            const documentHeight = document.documentElement.scrollHeight / currentZoom;
+
+            const boundedX = Math.max(0, Math.min(newX, windowWidth - calcWidth));
+            const boundedY = Math.max(0, Math.min(newY, documentHeight - calcHeight));
+
+            calculatorBox.style.left = boundedX + 'px';
+            calculatorBox.style.top = boundedY + 'px';
+        }
+    }, { passive: false });
+
+    document.addEventListener('touchend', () => {
+        if (isDragging) {
+            isDragging = false;
+        }
+    });
+
+    // Funkcja aktualizująca pozycję kalkulatora po zmianie zoomu
+    function updateCalculatorPosition(previousZoom) {
+        if (calculatorBox.style.display === 'block') {
+            const calcRect = calculatorBox.getBoundingClientRect();
+            const zoomRatio = previousZoom / currentZoom;
+            const newX = (calcRect.left + window.scrollX) * zoomRatio - window.scrollX;
+            const newY = (calcRect.top + window.scrollY) * zoomRatio - window.scrollY;
+            calculatorBox.style.left = (newX / currentZoom) + 'px';
+            calculatorBox.style.top = (newY / currentZoom) + 'px';
+        }
+    }
 </script>
 </body>
 </html>
