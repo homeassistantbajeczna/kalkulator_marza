@@ -230,7 +230,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        text-align: left;
+        text-align: center; /* Zmiana na center dla lepszego wyrównania */
         margin: 0 5px;
     }
 
@@ -238,7 +238,7 @@
         font-size: var(--small-font-size);
         text-transform: uppercase;
         margin-bottom: 5px;
-        text-align: left;
+        text-align: center; /* Wyrównanie etykiet do środka */
         width: 100%;
     }
 
@@ -477,16 +477,25 @@
     @media (max-width: 576px) {
         .form-row {
             flex-direction: column;
-            align-items: center; /* Wyrównanie wiersza do środka */
+            align-items: center;
+            justify-content: center;
             gap: 6px;
         }
 
-        .form-group, .input-group {
+        .form-group {
             width: 200px;
             max-width: 200px;
             min-width: 200px;
-            margin: 5px 0;
-            align-self: center; /* Wyrównanie boxów do środka */
+            margin: 5px auto; /* Wyśrodkowanie boxów */
+            align-items: center;
+            text-align: center;
+        }
+
+        .input-group {
+            width: 200px;
+            max-width: 200px;
+            min-width: 200px;
+            margin: 0 auto; /* Wyśrodkowanie input-group */
         }
 
         .form-control, .select-display {
@@ -505,6 +514,7 @@
         .select-wrapper {
             width: 200px;
             max-width: 200px;
+            margin: 0 auto; /* Wyśrodkowanie selecta */
         }
 
         .select-display {
@@ -515,7 +525,8 @@
 
         input[type="range"].form-range {
             width: 200px;
-            margin: 5px auto; /* Wyrównanie suwaka do środka */
+            margin: 5px auto;
+            display: block; /* Dla pewności wyśrodkowania */
             -webkit-appearance: none !important;
             appearance: none !important;
             outline: none !important;
