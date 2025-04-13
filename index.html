@@ -26,20 +26,29 @@
                     <form id="marginForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="cost" class="form-label">Koszt</label>
+                                <label for="initialValue" class="form-label">Wartość</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" id="cost" min="0" max="1000000" value="1000" step="0.01">
+                                    <input type="number" class="form-control" id="initialValue" min="0" max="1000000" value="1000" step="0.01">
                                     <span class="input-group-text">zł</span>
                                 </div>
-                                <input type="range" class="form-range" id="costRange" min="0" max="1000000" value="1000" step="0.01">
+                                <input type="range" class="form-range" id="initialValueRange" min="0" max="1000000" value="1000" step="0.01">
                             </div>
                             <div class="form-group">
-                                <label for="sellingPrice" class="form-label">Cena sprzedaży</label>
+                                <label for="percentage" class="form-label">Wartość %</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" id="sellingPrice" min="0" max="1000000" value="1500" step="0.01">
-                                    <span class="input-group-text">zł</span>
+                                    <input type="number" class="form-control" id="percentage" min="0" max="100" value="20" step="0.01">
+                                    <span class="input-group-text">%</span>
                                 </div>
-                                <input type="range" class="form-range" id="sellingPriceRange" min="0" max="1000000" value="1500" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="calcType" class="form-label">Typ</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control select-hidden" id="calcType">
+                                        <option value="margin" selected>Marża</option>
+                                        <option value="markup">Narzut</option>
+                                    </select>
+                                    <span class="select-display" id="calcTypeDisplay">Marża ▼</span>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -248,6 +257,40 @@
         justify-content: center;
     }
 
+    .select-wrapper {
+        position: relative;
+        width: 150px;
+        max-width: 150px;
+    }
+
+    .select-hidden {
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 22px;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .select-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        font-size: var(--small-font-size);
+        padding: 2px 8px 2px 5px;
+        text-align: center;
+        background: var(--input-bg);
+        color: var(--primary-text);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        box-sizing: border-box;
+        line-height: 18px;
+        width: 100%;
+        cursor: pointer;
+        z-index: 1;
+    }
+
     .form-control:focus {
         outline: none !important;
         box-shadow: 0 0 4px var(--accent-color);
@@ -445,7 +488,7 @@
             align-self: flex-start;
         }
 
-        .form-control {
+        .form-control, .select-display {
             height: 26px;
             padding: 4px 8px;
             line-height: 20px;
@@ -455,6 +498,17 @@
             height: 26px;
             width: 80px;
             padding: 4px 8px;
+            line-height: 20px;
+        }
+
+        .select-wrapper {
+            width: 200px;
+            max-width: 200px;
+        }
+
+        .select-display {
+            width: 200px;
+            height: 26px;
             line-height: 20px;
         }
 
@@ -494,96 +548,109 @@
     const elements = {
         formSection: document.getElementById("formSection"),
         resultSection: document.getElementById("resultSection"),
-        cost: document.getElementById("cost"),
-        costRange: document.getElementById("costRange"),
-        sellingPrice: document.getElementById("sellingPrice"),
-        sellingPriceRange: document.getElementById("sellingPriceRange"),
+        initialValue: document.getElementById("initialValue"),
+        initialValueRange: document.getElementById("initialValueRange"),
+        percentage: document.getElementById("percentage"),
+        calcType: document.getElementById("calcType"),
         summaryBars: document.getElementById("summaryBars")
     };
 
-    // Synchronizacja suwaka i pola liczbowego dla kosztu
-    elements.costRange.addEventListener("input", () => {
-        let value = parseFloat(elements.costRange.value);
-        if (value < 0) {
-            value = 0;
-            elements.costRange.value = value;
-        }
-        elements.cost.value = value.toFixed(2);
-        calculateMargin();
-    });
-
-    elements.cost.addEventListener("input", () => {
-        let value = parseFloat(elements.cost.value);
-        const maxValue = parseFloat(elements.costRange.max);
-        if (isNaN(value) || value < 0) {
-            value = 0;
-            elements.cost.value = value.toFixed(2);
-        }
-        if (value > maxValue) {
-            value = maxValue;
-            elements.cost.value = value.toFixed(2);
-        }
-        elements.costRange.value = value;
-        calculateMargin();
-    });
-
-    // Synchronizacja suwaka i pola liczbowego dla ceny sprzedaży
-    elements.sellingPriceRange.addEventListener("input", () => {
-        let value = parseFloat(elements.sellingPriceRange.value);
-        if (value < 0) {
-            value = 0;
-            elements.sellingPriceRange.value = value;
-        }
-        elements.sellingPrice.value = value.toFixed(2);
-        calculateMargin();
-    });
-
-    elements.sellingPrice.addEventListener("input", () => {
-        let value = parseFloat(elements.sellingPrice.value);
-        const maxValue = parseFloat(elements.sellingPriceRange.max);
-        if (isNaN(value) || value < 0) {
-            value = 0;
-            elements.sellingPrice.value = value.toFixed(2);
-        }
-        if (value > maxValue) {
-            value = maxValue;
-            elements.sellingPrice.value = value.toFixed(2);
-        }
-        elements.sellingPriceRange.value = value;
-        calculateMargin();
-    });
-
-    // Obliczenia marży i narzutu
-    function calculateMargin() {
-        const cost = parseFloat(elements.cost.value) || 0;
-        const sellingPrice = parseFloat(elements.sellingPrice.value) || 0;
-
-        let marginPercent = 0;
-        let marginAmount = 0;
-        let markupPercent = 0;
-        let markupAmount = 0;
-
-        if (sellingPrice > 0) {
-            marginAmount = sellingPrice - cost;
-            marginPercent = (marginAmount / sellingPrice) * 100;
-        }
-
-        if (cost > 0) {
-            markupAmount = sellingPrice - cost;
-            markupPercent = (markupAmount / cost) * 100;
-        }
-
-        // Wyświetlenie wyników
-        elements.summaryBars.innerHTML = `
-            <div class="summary-bar" data-tooltip="${formatNumber(marginPercent)}%"><span class="label">Marża (%):</span> <span class="value">${formatNumber(marginPercent)}%</span></div>
-            <div class="summary-bar" data-tooltip="${formatNumber(marginAmount)} zł"><span class="label">Marża (zł):</span> <span class="value">${formatNumber(marginAmount)} zł</span></div>
-            <div class="summary-bar" data-tooltip="${formatNumber(markupPercent)}%"><span class="label">Narzut (%):</span> <span class="value">${formatNumber(markupPercent)}%</span></div>
-            <div class="summary-bar" data-tooltip="${formatNumber(markupAmount)} zł"><span class="label">Narzut (zł):</span> <span class="value">${formatNumber(markupAmount)} zł</span></div>
-        `;
+    function updateSelectDisplay(selectElement, displayElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex].text;
+        displayElement.textContent = `${selectedOption} ▼`;
     }
 
+    // Inicjalizacja wyświetlania selecta
+    const calcTypeDisplay = document.getElementById("calcTypeDisplay");
+    updateSelectDisplay(elements.calcType, calcTypeDisplay);
+
+    // Obsługa kliknięcia w select-display
+    calcTypeDisplay.addEventListener("click", () => {
+        elements.calcType.focus();
+        elements.calcType.click();
+    });
+
+    // Synchronizacja suwaka i pola liczbowego dla wartości początkowej
+    elements.initialValueRange.addEventListener("input", () => {
+        let value = parseFloat(elements.initialValueRange.value);
+        if (value < 0) {
+            value = 0;
+            elements.initialValueRange.value = value;
+        }
+        elements.initialValue.value = value.toFixed(2);
+        calculateResults();
+    });
+
+    elements.initialValue.addEventListener("input", () => {
+        let value = parseFloat(elements.initialValue.value);
+        const maxValue = parseFloat(elements.initialValueRange.max);
+        if (isNaN(value) || value < 0) {
+            value = 0;
+            elements.initialValue.value = value.toFixed(2);
+        }
+        if (value > maxValue) {
+            value = maxValue;
+            elements.initialValue.value = value.toFixed(2);
+        }
+        elements.initialValueRange.value = value;
+        calculateResults();
+    });
+
+    // Walidacja pola procentowego
+    elements.percentage.addEventListener("input", () => {
+        let value = parseFloat(elements.percentage.value);
+        if (isNaN(value) || value < 0) {
+            value = 0;
+            elements.percentage.value = value.toFixed(2);
+        }
+        if (value > 100) {
+            value = 100;
+            elements.percentage.value = value.toFixed(2);
+        }
+        calculateResults();
+    });
+
+    // Obliczenia marży lub narzutu
+    function calculateResults() {
+        const initialValue = parseFloat(elements.initialValue.value) || 0;
+        const percentage = parseFloat(elements.percentage.value) || 0;
+        const calcType = elements.calcType.value;
+
+        let resultPercent, revenue, profit;
+
+        if (calcType === "margin") {
+            // Marża
+            resultPercent = percentage;
+            revenue = initialValue / (1 - percentage / 100);
+            profit = revenue - initialValue;
+
+            elements.summaryBars.innerHTML = `
+                <div class="summary-bar" data-tooltip="${formatNumber(resultPercent)}%"><span class="label">Marża (%):</span> <span class="value">${formatNumber(resultPercent)}%</span></div>
+                <div class="summary-bar" data-tooltip="${formatNumber(revenue)} zł"><span class="label">Przychód:</span> <span class="value">${formatNumber(revenue)} zł</span></div>
+                <div class="summary-bar" data-tooltip="${formatNumber(profit)} zł"><span class="label">Zysk:</span> <span class="value">${formatNumber(profit)} zł</span></div>
+            `;
+        } else {
+            // Narzut
+            resultPercent = percentage;
+            revenue = initialValue * (1 + percentage / 100);
+            profit = revenue - initialValue;
+
+            elements.summaryBars.innerHTML = `
+                <div class="summary-bar" data-tooltip="${formatNumber(resultPercent)}%"><span class="label">Narzut (%):</span> <span class="value">${formatNumber(resultPercent)}%</span></div>
+                <div class="summary-bar" data-tooltip="${formatNumber(revenue)} zł"><span class="label">Przychód:</span> <span class="value">${formatNumber(revenue)} zł</span></div>
+                <div class="summary-bar" data-tooltip="${formatNumber(profit)} zł"><span class="label">Zysk:</span> <span class="value">${formatNumber(profit)} zł</span></div>
+            `;
+        }
+    }
+
+    // Nasłuchiwanie zmian w selekcie
+    elements.calcType.addEventListener("change", () => {
+        updateSelectDisplay(elements.calcType, calcTypeDisplay);
+        calculateResults();
+    });
+
     // Inicjalne obliczenie
-    calculateMargin();
+    calculateResults();
 
     // Zoom
     let currentZoom = 1;
